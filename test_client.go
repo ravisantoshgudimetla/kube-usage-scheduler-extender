@@ -20,12 +20,13 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"time"
-
-	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
+	resourceclient "k8s.io/metrics/pkg/client/clientset_generated/clientset/typed/metrics/v1beta1"
+	//"k8s.io/api/core/v1"
+	//"k8s.io/apimachinery/pkg/labels"
+	"time"
 	// Uncomment the following line to load the gcp plugin (only required to authenticate against GKE clusters).
 	// _ "k8s.io/client-go/plugin/pkg/client/auth/gcp"
 )
@@ -50,30 +51,75 @@ func main() {
 	if err != nil {
 		panic(err.Error())
 	}
-	for {
-		pods, err := clientset.CoreV1().Pods("").List(metav1.ListOptions{})
-		if err != nil {
-			panic(err.Error())
-		}
-		fmt.Printf("There are %d pods in the cluster\n", len(pods.Items))
 
-		// Examples for error handling:
-		// - Use helper functions like e.g. errors.IsNotFound()
-		// - And/or cast to StatusError and use its properties like e.g. ErrStatus.Message
-		_, err = clientset.CoreV1().Pods("default").Get("example-xxxxx", metav1.GetOptions{})
-		if errors.IsNotFound(err) {
-			fmt.Printf("Pod not found\n")
-		} else if statusError, isStatus := err.(*errors.StatusError); isStatus {
-			fmt.Printf("Error getting pod %v\n", statusError.ErrStatus.Message)
-		} else if err != nil {
-			panic(err.Error())
-		} else {
-			fmt.Printf("Found pod\n")
-		}
+	pods, err := clientset.CoreV1().Pods("").List(metav1.ListOptions{})
+	if err != nil {
+		panic(err.Error())
+	}
+	fmt.Printf("There are %d pods in the cluster\n", len(pods.Items))
+	config1, _ := resourceclient.NewForConfig(config)
+	metricsClient := NewRESTMetricsClient(config1)
+	metricsClient.GetResourceMetric()
+}
 
-		time.Sleep(10 * time.Second)
+
+// NodeMetricsInfo contains pod metric values as a map from pod names to
+// metric values (the metric values are expected to be the metric as a milli-value)
+type NodeMetricsInfo map[string]int64
+
+func NewRESTMetricsClient(resourceClient resourceclient.NodeMetricsesGetter) MetricsClient {
+	return &restMetricsClient{
+		&resourceMetricsClient{resourceClient},
 	}
 }
+
+// restMetricsClient is a client which supports fetching
+// metrics from both the resource metrics API and the
+// custom metrics API.
+type restMetricsClient struct {
+	*resourceMetricsClient
+}
+
+// MetricsClient knows how to query a remote interface to retrieve container-level
+// resource metrics as well as pod-level arbitrary metrics
+type MetricsClient interface {
+	// GetResourceMetric gets the given resource metric (and an associated oldest timestamp)
+	// for all pods matching the specified selector in the given namespace
+	//GetResourceMetric(resource v1.ResourceName, namespace string, selector labels.Selector) (NodeMetricsInfo, time.Time, error)
+	GetResourceMetric() (NodeMetricsInfo, time.Time, error)
+}
+
+
+type resourceMetricsClient struct {
+	client resourceclient.NodeMetricsesGetter
+}
+
+
+// GetResourceMetric gets the given resource metric (and an associated oldest timestamp)
+// for all pods matching the specified selector in the given namespace
+func (c *resourceMetricsClient) GetResourceMetric() (NodeMetricsInfo, time.Time, error) {
+	metrics, err := c.client.NodeMetricses().List(metav1.ListOptions{})
+	if err != nil {
+		fmt.Printf("unable to fetch metrics from API: %v", err)
+		return nil, time.Time{}, fmt.Errorf("unable to fetch metrics from API: %v", err)
+	}
+
+	if len(metrics.Items) == 0 {
+		fmt.Print("Cost of system")
+		return nil, time.Time{}, fmt.Errorf("no metrics returned from heapster")
+	}
+
+	//res := make(NodeMetricsInfo, len(metrics.Items))
+
+	for _, m := range metrics.Items {
+		fmt.Printf("Node Usage %v", m.Name, m.Usage.Cpu())
+	}
+
+	timestamp := metrics.Items[0].Timestamp.Time
+
+	return nil, timestamp, nil
+}
+
 
 func homeDir() string {
 	if h := os.Getenv("HOME"); h != "" {
