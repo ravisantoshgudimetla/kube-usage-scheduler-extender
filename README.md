@@ -1,2 +1,2 @@
-# Prom-client-testing
-Testing prometheus client to check if it can get CPU, memory and podcount on a kubernetes cluster.
+# Metrics-server-client-testing
+Testing kube metrics client to get node level metrics on a kubernetes cluster.
