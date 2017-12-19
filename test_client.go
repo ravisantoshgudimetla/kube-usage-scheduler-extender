@@ -19,7 +19,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
-	"path/filepath"
+	//"path/filepath"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
@@ -34,9 +34,9 @@ import (
 func main() {
 	var kubeconfig *string
 	if home := homeDir(); home != "" {
-		kubeconfig = flag.String("kubeconfig", filepath.Join(home, ".kube", "config"), "(optional) absolute path to the kubeconfig file")
+		kubeconfig = flag.String("kubeconfig", "/var/run/kubernetes/admin.kubeconfig", "(optional) absolute path to the kubeconfig file")
 	} else {
-		kubeconfig = flag.String("kubeconfig", "", "absolute path to the kubeconfig file")
+		kubeconfig = flag.String("kubeconfig", "/var/run/kubernetes/admin.kubeconfig", "absolute path to the kubeconfig file")
 	}
 	flag.Parse()
 
@@ -57,6 +57,7 @@ func main() {
 		panic(err.Error())
 	}
 	fmt.Printf("There are %d pods in the cluster\n", len(pods.Items))
+	// config1 is used for resourceclient
 	config1, _ := resourceclient.NewForConfig(config)
 	metricsClient := NewRESTMetricsClient(config1)
 	metricsClient.GetResourceMetric()
@@ -85,7 +86,6 @@ type restMetricsClient struct {
 type MetricsClient interface {
 	// GetResourceMetric gets the given resource metric (and an associated oldest timestamp)
 	// for all pods matching the specified selector in the given namespace
-	//GetResourceMetric(resource v1.ResourceName, namespace string, selector labels.Selector) (NodeMetricsInfo, time.Time, error)
 	GetResourceMetric() (NodeMetricsInfo, time.Time, error)
 }
 
@@ -105,14 +105,13 @@ func (c *resourceMetricsClient) GetResourceMetric() (NodeMetricsInfo, time.Time,
 	}
 
 	if len(metrics.Items) == 0 {
-		fmt.Print("Cost of system")
-		return nil, time.Time{}, fmt.Errorf("no metrics returned from heapster")
+		return nil, time.Time{}, fmt.Errorf("no metrics returned from metric-server")
 	}
 
 	//res := make(NodeMetricsInfo, len(metrics.Items))
 
 	for _, m := range metrics.Items {
-		fmt.Printf("Node Usage %v", m.Name, m.Usage.Cpu())
+		fmt.Printf("Node %v, CPU Usage %v, Memory Usage %v", m.Name, m.Usage.Cpu(), m.Usage.Memory())
 	}
 
 	timestamp := metrics.Items[0].Timestamp.Time

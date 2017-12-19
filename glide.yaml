@@ -1,4 +1,4 @@
-package: github.com/Prom-client-testing
+package: github.com/kube-metrics-test
 import:
 - package: k8s.io/apimachinery
   subpackages:
@@ -9,3 +9,5 @@ import:
   subpackages:
   - kubernetes
   - tools/clientcmd
+- package: k8s.io/metrics
+  version: 57c465e2a974054e05a96b787009f81bc010092a

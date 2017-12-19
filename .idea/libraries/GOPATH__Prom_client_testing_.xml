@@ -11,8 +11,10 @@
       <root url="file://$PROJECT_DIR$/../../go4.org" />
       <root url="file://$PROJECT_DIR$/../../etcd" />
       <root url="file://$PROJECT_DIR$/.." />
+      <root url="file://$PROJECT_DIR$/../../KVStore" />
       <root url="file://$PROJECT_DIR$/../../bitbucket.org" />
       <root url="file://$PROJECT_DIR$/../../_output" />
+      <root url="file://$PROJECT_DIR$/../../Go_Leaks" />
       <root url="file://$PROJECT_DIR$/../../origin" />
       <root url="file://$PROJECT_DIR$/../../golang.org" />
     </CLASSES>
@@ -27,8 +29,10 @@
       <root url="file://$PROJECT_DIR$/../../go4.org" />
       <root url="file://$PROJECT_DIR$/../../etcd" />
       <root url="file://$PROJECT_DIR$/.." />
+      <root url="file://$PROJECT_DIR$/../../KVStore" />
       <root url="file://$PROJECT_DIR$/../../bitbucket.org" />
       <root url="file://$PROJECT_DIR$/../../_output" />
+      <root url="file://$PROJECT_DIR$/../../Go_Leaks" />
       <root url="file://$PROJECT_DIR$/../../origin" />
       <root url="file://$PROJECT_DIR$/../../golang.org" />
     </SOURCES>

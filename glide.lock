@@ -1,5 +1,5 @@
-hash: cad9154d4fd8a6b1802069e2e82736de1bb9d3f3fa483e1b1da431000ed58379
-updated: 2017-11-25T16:30:17.684656215-05:00
+hash: a74ffcdc9144ddc2b563d8d2e54145aad7185c6de1128990913b769b1ebbb2fb
+updated: 2017-11-25T16:56:56.133914997-05:00
 imports:
 - name: github.com/davecgh/go-spew
   version: 782f4967f2dc4564575ca782fe2d04090b5faca8
@@ -227,4 +227,12 @@ imports:
   version: 868f2f29720b192240e18284659231b440f9cda5
   subpackages:
   - pkg/common
+- name: k8s.io/metrics
+  version: 57c465e2a974054e05a96b787009f81bc010092a
+  subpackages:
+  - pkg/apis/metrics
+  - pkg/apis/metrics/v1alpha1
+  - pkg/apis/metrics/v1beta1
+  - pkg/client/clientset_generated/clientset/scheme
+  - pkg/client/clientset_generated/clientset/typed/metrics/v1beta1
 testImports: []
