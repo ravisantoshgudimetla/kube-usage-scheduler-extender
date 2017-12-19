@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/Prom-client-testing.iml" filepath="$PROJECT_DIR$/.idea/Prom-client-testing.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/kube-metrics-test.iml" filepath="$PROJECT_DIR$/.idea/kube-metrics-test.iml" />
     </modules>
   </component>
 </project>

@@ -1,5 +1,5 @@
 <component name="libraryTable">
-  <library name="GOPATH &lt;Prom-client-testing&gt;">
+  <library name="GOPATH &lt;kube-metrics-test&gt;">
     <CLASSES>
       <root url="file://$PROJECT_DIR$/../../vbom.ml" />
       <root url="file://$PROJECT_DIR$/../../disk-informer" />
@@ -37,7 +37,7 @@
       <root url="file://$PROJECT_DIR$/../../golang.org" />
     </SOURCES>
     <excluded>
-      <root url="file://$PROJECT_DIR$/../kube-metrics-test" />
+      <root url="file://$PROJECT_DIR$" />
     </excluded>
   </library>
 </component>
