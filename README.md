@@ -1,5 +1,7 @@
 # Kube-CaB
-This has two kube metrics client to get node level metrics on a kubernetes cluster.
+This has two componets:
+- Kube metrics client to get node level metrics in a kubernetes cluster.
+- A sample kubernetes scheduler extender which returns the node with least cost.
 
 ## Build and Run
 
@@ -16,5 +18,6 @@ $ _output/bin/kube-cab --kubeconfig <path to kubeconfig file>
 
 Sample Output:
 
+At 2017-12-19 19:39:00 +0530 IST time, node 172.17.0.1 is the least utilized one
 
 
