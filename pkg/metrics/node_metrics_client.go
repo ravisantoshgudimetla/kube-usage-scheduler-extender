@@ -31,34 +31,41 @@ type restMetricsClient struct {
 type MetricsClient interface {
 	// GetResourceMetric gets the given resource metric (and an associated oldest timestamp)
 	// for all pods matching the specified selector in the given namespace
-	GetResourceMetric() (NodeMetricsInfo, time.Time, error)
+	GetResourceMetric() (string, time.Time, error)
 }
 
+// resourceMetricsClient has a client to NodeMetricsGetter.
 type resourceMetricsClient struct {
 	client resourceclient.NodeMetricsesGetter
 }
 
 // GetResourceMetric gets the given resource metric (and an associated oldest timestamp)
 // for all pods matching the specified selector in the given namespace
-func (c *resourceMetricsClient) GetResourceMetric() (NodeMetricsInfo, time.Time, error) {
+func (c *resourceMetricsClient) GetResourceMetric() (string, time.Time, error) {
 	metrics, err := c.client.NodeMetricses().List(metav1.ListOptions{})
 	if err != nil {
 		fmt.Printf("unable to fetch metrics from API: %v", err)
-		return nil, time.Time{}, fmt.Errorf("unable to fetch metrics from API: %v", err)
+		return "", time.Time{}, fmt.Errorf("unable to fetch metrics from API: %v", err)
 	}
 
 	if len(metrics.Items) == 0 {
-		return nil, time.Time{}, fmt.Errorf("no metrics returned from metric-server")
+		return "", time.Time{}, fmt.Errorf("no metrics returned from metric-server")
 	}
 	// In the list of nodes, find the one which has least CPU
-	getNodeWithLeastCPU(metrics)
+	node := getNodeWithLeastCPU(metrics)
 	timestamp := metrics.Items[0].Timestamp.Time
-	return nil, timestamp, nil
+	return node, timestamp, nil
 }
 
-func getNodeWithLeastCPU(metrics *v1beta1.NodeMetricsList) {
+// getNodeWithLeastCPU returns the node with least CPU usage.
+func getNodeWithLeastCPU(metrics *v1beta1.NodeMetricsList) string {
+	lowNode := metrics.Items[0]
 	for _, m := range metrics.Items {
-		// Implement logic to find node which has least CPU utilization.
-		fmt.Printf("Node %v, CPU Usage %v, Memory Usage %v", m.Name, m.Usage.Cpu(), m.Usage.Memory())
+		if m.Usage.Cpu().Value() < lowNode.Usage.Cpu().Value(){
+			lowNode = m
+		}
 	}
+	// Implement logic to find node which has least CPU utilization.
+	//fmt.Printf("Node %v, CPU Usage %v, Memory Usage %v", lowNode.Name, lowNode.Usage.Cpu(), lowNode.Usage.Memory())
+	return lowNode.Name
 }

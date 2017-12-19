@@ -2,6 +2,7 @@
 package main
 
 import (
+	"fmt"
 	"flag"
 	"k8s.io/client-go/tools/clientcmd"
 	resourceclient "k8s.io/metrics/pkg/client/clientset_generated/clientset/typed/metrics/v1beta1"
@@ -24,5 +25,9 @@ func main() {
 		panic(err.Error())
 	}
 	metricsClient := metrics.NewRESTMetricsClient(metricsConfig)
-	metricsClient.GetResourceMetric()
+	leastUtilizedNode, timeStamp, err := metricsClient.GetResourceMetric()
+	if err != nil {
+		panic(err.Error())
+	}
+	fmt.Printf("At %v time, node %v is the least utilized one\n", timeStamp, leastUtilizedNode)
 }
