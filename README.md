@@ -1,7 +1,7 @@
 # Kube-‘CaB’  — Add-on services in kubernetes to make it ‘Cheap’ & ‘Balanced’
-Kubernetes's stock scheduler won't take into account the current utilization of nodes in cluster. We intend to solve this problem with Kube-CaB. Kube-CaB is designed to be an add-on service on top of kubernetes to enhance the  scheduler with resource management capabilities. This has two componets:
+Kubernetes's stock scheduler won't take into account the current utilization of nodes in cluster. We intend to solve this problem with Kube-CaB. Kube-CaB is designed to be an add-on service on top of kubernetes to enhance the  scheduler with resource management capabilities and cost related optimizations in cloud. It has two components:
 - Kube metrics client to get node level metrics in a kubernetes cluster.
-- A sample kubernetes scheduler extender which returns the node with least cost.
+- A sample kubernetes scheduler extender which returns the node with least cost in the cloud. As of now, the algorithm is very simple with static hardcoding of node costs in the cloud.
 
 ## Build and Run
 
