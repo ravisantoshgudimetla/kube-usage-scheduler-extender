@@ -1,5 +1,5 @@
 # Kube-CaB
-This has two componets:
+KubernetesKube-CaB is designed to be an add-on service on top of kubernetes to enhance the  scheduler with resource managementThis has two componets:
 - Kube metrics client to get node level metrics in a kubernetes cluster.
 - A sample kubernetes scheduler extender which returns the node with least cost.
 
