@@ -1,24 +1,19 @@
-package algorithm
+package main
 
 import (
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
+	"github.com/kube-metrics-test/pkg/algorithm"
 	"github.com/kube-metrics-test/pkg/metrics"
 	"k8s.io/api/core/v1"
 	restclient "k8s.io/client-go/rest"
 	resourceclient "k8s.io/metrics/pkg/client/clientset_generated/clientset/typed/metrics/v1beta1"
-	"math"
-	"math/rand"
 	"net/http"
 	"strings"
-	"time"
 )
 
-// NodeCost is nodename to cost mapping. cost is combination of
-type NodeCostInfo map[string]int64
-
-// All these types could be exported from scheduler once we import k8s.io/kubernetes as scheduler is not separated as
+// TODO: All these types could be exported from scheduler once we import k8s.io/kubernetes as scheduler is not separated as
 // repo.
 type FailedNodesMap map[string]string
 
@@ -46,64 +41,6 @@ type ExtenderFilterResult struct {
 	FailedNodes FailedNodesMap
 	// Error message indicating failure
 	Error string
-}
-
-// random - just some random function which returns values between ranges.
-func random(min, max int64) int64 {
-	return rand.Int63n(max-min) + min
-}
-
-// populateCostForEachNode - As of now, generates random value for each node in cloud. This f(n) could be replaced with
-// dynamic cost function.
-func populateCostForEachNode(nodeList *v1.NodeList) NodeCostInfo {
-	nodeCloudCostInfo := NodeCostInfo{}
-	rand.Seed(time.Now().Unix())
-	// Replace this to get cost for each node in cloud.
-	for _, node := range nodeList.Items {
-		nodeCloudCostInfo[node.Name] = random(int64(1), int64(100))
-	}
-	return nodeCloudCostInfo
-}
-
-func findOptimizedNode(nodeTotalCostInfo NodeCostInfo, nodeList *v1.NodeList) []v1.Node {
-	minCost := int64(math.MaxInt64)
-	var nodeNeeded string
-	for node, cost := range nodeTotalCostInfo {
-		if cost < minCost {
-			minCost = cost
-			nodeNeeded = node
-		}
-	}
-	fmt.Printf("The node %v is the node with minimum cost %v", nodeNeeded, minCost)
-	var neededNodeList []v1.Node
-	for _, node := range nodeList.Items {
-		if node.Name == nodeNeeded {
-			neededNodeList = append(neededNodeList, node)
-		}
-	}
-	return neededNodeList
-}
-
-// findNodeWithLeastCostInCluster takes nodeList, nodeCostInfo and nodeMetricsInfo and returns node with least cost.
-func findOptimizedNodeInCluster(nodeList *v1.NodeList, nodeCostInfo NodeCostInfo, nodeMetricsInfo metrics.NodeMetricsInfo) []v1.Node {
-	nodeTotalCost := NodeCostInfo{}
-	var cloudCost, cpuUtil int64
-	var ok bool
-	// The optimization function is sum of cpuUtil and cloudCost should be minimum.
-	for _, node := range nodeList.Items {
-		cloudCost, ok = nodeCostInfo[node.Name]
-		if !ok {
-			continue
-		}
-		cpuUtil, ok = nodeMetricsInfo[node.Name]
-		if !ok {
-			continue
-		}
-		fmt.Printf("Cloud Cost is %v, cpuUtil Cost is %v\n", cloudCost, cpuUtil)
-		totalCost := cloudCost + cpuUtil
-		nodeTotalCost[node.Name] = totalCost
-	}
-	return findOptimizedNode(nodeTotalCost, nodeList)
 }
 
 // schedule does the actual scheduling of pods on the given node.
@@ -143,14 +80,14 @@ func filter(args *ExtenderArgs, config *restclient.Config) *ExtenderFilterResult
 		return &ExtenderFilterResult{Nodes: args.Nodes, NodeNames: nil, FailedNodes: nil}
 	}
 	fmt.Printf("At %v time, %v is the node utilization map\n", timeStamp, nodeUtilInfo)
-	// Populate cost for each node from cloud.
-	nodeCostInfo := populateCostForEachNode(args.Nodes)
+	// Populate cost for each node from cloud. This step will be replaced later.
+	nodeCostInfo := algorithm.PopulateCostForEachNode(args.Nodes)
 	// Find the totalCost of each node.
-	nodesWithLeastCost := findOptimizedNodeInCluster(args.Nodes, nodeCostInfo, nodeUtilInfo)
+	nodesWithLeastCost := algorithm.FindOptimizedNodeInCluster(args.Nodes, nodeCostInfo, nodeUtilInfo)
 	return &ExtenderFilterResult{Nodes: &v1.NodeList{Items: nodesWithLeastCost}, NodeNames: nil, FailedNodes: nil}
 }
 
-func StartHttpServer(config *restclient.Config) {
+func startHttpServer(config *restclient.Config) {
 	router := mux.NewRouter()
 	router.HandleFunc("/scheduler/filter", func(w http.ResponseWriter, r *http.Request) { schedule(w, r, config) }).Methods("POST")
 	http.ListenAndServe(":9000", router)
