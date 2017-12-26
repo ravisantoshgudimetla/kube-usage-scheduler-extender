@@ -25,5 +25,6 @@ and then run kube-cab:
 $ _output/bin/kube-cab --kubeconfig <path to kubeconfig file>
 ```
 
-
+## Note:
+This is not ready for production use yet. But give it a spin and provide some feedback.
 
