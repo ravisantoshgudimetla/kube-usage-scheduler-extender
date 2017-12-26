@@ -8,7 +8,9 @@ Kubernetes's stock scheduler won't take into account the current utilization of 
 ![](https://github.com/ravisantoshgudimetla/kube-CaB/blob/master/Kube-CaB%20Arch.png)
 
 ### Flow
-Kubernetes scheduler has the concept of scheduler extender and it sends the request to HTTP server before binding a pod to node if extender is enabled. The request sent to HTTP server includes pod and nodelist that are filtered till now. 
+- Kubernetes scheduler has the concept of scheduler extender and it sends the request to HTTP server before binding a pod to node if extender is enabled. The request sent to HTTP server includes pod and nodelist that are filtered. 
+- The extender has a filter function which further filters the nodes from list. The filtering is based on computation algorithm. The computation algorithm as of now is an optimization function which has a goal of reducing the cost. The cost is sum of CPU utilization value and cost of node is cluster.
+- Once the filtering happens, the HTTP server responds back with node which has the least cost.
 
 ## Build and Run
 
