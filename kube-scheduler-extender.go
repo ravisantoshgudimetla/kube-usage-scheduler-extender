@@ -87,6 +87,7 @@ func filter(args *ExtenderArgs, config *restclient.Config) *ExtenderFilterResult
 	return &ExtenderFilterResult{Nodes: &v1.NodeList{Items: nodesWithLeastCost}, NodeNames: nil, FailedNodes: nil}
 }
 
+// startHttpServer starts the HTTP server needed for scheduler.
 func startHttpServer(config *restclient.Config) {
 	router := mux.NewRouter()
 	router.HandleFunc("/scheduler/filter", func(w http.ResponseWriter, r *http.Request) { schedule(w, r, config) }).Methods("POST")
