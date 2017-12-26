@@ -7,6 +7,9 @@ Kubernetes's stock scheduler won't take into account the current utilization of 
 
 ![](https://github.com/ravisantoshgudimetla/kube-CaB/blob/master/Kube-CaB%20Arch.png)
 
+### Flow
+Kubernetes scheduler has the concept of scheduler extender and it sends the request to HTTP server before binding a pod to node if extender is enabled. The request sent to HTTP server includes pod and nodelist that are filtered till now. 
+
 ## Build and Run
 
  Do a git clone of this repo and then run:
