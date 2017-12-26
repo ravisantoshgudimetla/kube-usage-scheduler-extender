@@ -8,19 +8,12 @@ import (
 	"k8s.io/api/core/v1"
 	restclient "k8s.io/client-go/rest"
 	resourceclient "k8s.io/metrics/pkg/client/clientset_generated/clientset/typed/metrics/v1beta1"
-	"net/http"
-	"strings"
 	"math"
 	"math/rand"
+	"net/http"
+	"strings"
 	"time"
 )
-
-
-type nodeCost struct {
-	nodeName string
-	TotalCost int64
-}
-
 
 // NodeCost is nodename to cost mapping. cost is combination of
 type NodeCostInfo map[string]int64
@@ -28,7 +21,6 @@ type NodeCostInfo map[string]int64
 // All these types could be exported from scheduler once we import k8s.io/kubernetes as scheduler is not separated as
 // repo.
 type FailedNodesMap map[string]string
-
 
 // ExtenderArgs represents the arguments needed by the extender to filter/prioritize
 // nodes for a pod.
@@ -58,13 +50,12 @@ type ExtenderFilterResult struct {
 
 // random - just some random function which returns values between ranges.
 func random(min, max int64) int64 {
-	return rand.Int63n(max-min)+min
+	return rand.Int63n(max-min) + min
 }
-
 
 // populateCostForEachNode - As of now, generates random value for each node in cloud. This f(n) could be replaced with
 // dynamic cost function.
-func populateCostForEachNode(nodeList *v1.NodeList) NodeCostInfo{
+func populateCostForEachNode(nodeList *v1.NodeList) NodeCostInfo {
 	nodeCloudCostInfo := NodeCostInfo{}
 	rand.Seed(time.Now().Unix())
 	// Replace this to get cost for each node in cloud.
@@ -96,7 +87,7 @@ func findOptimizedNode(nodeTotalCostInfo NodeCostInfo, nodeList *v1.NodeList) []
 // findNodeWithLeastCostInCluster takes nodeList, nodeCostInfo and nodeMetricsInfo and returns node with least cost.
 func findOptimizedNodeInCluster(nodeList *v1.NodeList, nodeCostInfo NodeCostInfo, nodeMetricsInfo metrics.NodeMetricsInfo) []v1.Node {
 	nodeTotalCost := NodeCostInfo{}
-	var cloudCost,cpuUtil int64
+	var cloudCost, cpuUtil int64
 	var ok bool
 	// The optimization function is sum of cpuUtil and cloudCost should be minimum.
 	for _, node := range nodeList.Items {
@@ -104,7 +95,7 @@ func findOptimizedNodeInCluster(nodeList *v1.NodeList, nodeCostInfo NodeCostInfo
 		if !ok {
 			continue
 		}
-		cpuUtil,ok = nodeMetricsInfo[node.Name]
+		cpuUtil, ok = nodeMetricsInfo[node.Name]
 		if !ok {
 			continue
 		}
@@ -115,6 +106,7 @@ func findOptimizedNodeInCluster(nodeList *v1.NodeList, nodeCostInfo NodeCostInfo
 	return findOptimizedNode(nodeTotalCost, nodeList)
 }
 
+// schedule does the actual scheduling of pods on the given node.
 func schedule(w http.ResponseWriter, r *http.Request, config *restclient.Config) {
 	// Get the list of nodes from scheduler in request and sort them based on the cost.
 	// Iterate over the list of nodes which has least CPU.
@@ -133,6 +125,7 @@ func schedule(w http.ResponseWriter, r *http.Request, config *restclient.Config)
 	}
 }
 
+// filter takes the metrics config input and returns
 func filter(args *ExtenderArgs, config *restclient.Config) *ExtenderFilterResult {
 	// Get the CPU utilization for each node. It returns nodename and CPU value.
 	metricsConfig, err := resourceclient.NewForConfig(config)
@@ -146,7 +139,7 @@ func filter(args *ExtenderArgs, config *restclient.Config) *ExtenderFilterResult
 	nodeUtilInfo, timeStamp, err := metricsClient.GetResourceMetric()
 	if err != nil {
 		// return all the nodes here as metrics are not yet available.
-		fmt.Println("Returning node here")
+		fmt.Println("Returning nodes here")
 		return &ExtenderFilterResult{Nodes: args.Nodes, NodeNames: nil, FailedNodes: nil}
 	}
 	fmt.Printf("At %v time, %v is the node utilization map\n", timeStamp, nodeUtilInfo)
