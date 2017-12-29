@@ -4,7 +4,7 @@ import (
 	"testing"
 	"k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"github.com/kube-metrics-test/pkg/metrics"
+	"github.com/kube-cab/pkg/metrics"
 	"reflect"
 
 )

@@ -2,7 +2,7 @@ package algorithm
 
 import (
 	"fmt"
-	"github.com/kube-metrics-test/pkg/metrics"
+	"github.com/kube-cab/pkg/metrics"
 	"k8s.io/api/core/v1"
 	"math"
 	"math/rand"
