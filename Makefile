@@ -4,7 +4,7 @@
 VERSION=`git describe --tags`
 COMMIT=`git rev-parse HEAD`
 BUILD=`date +%FT%T%z`
-GO_TESTS=`go list github.com/ravisantoshgudimetla/kube-cab/... | grep -v github.com/ravisantoshgudimetla/kube-cab/vendor/`
+GO_TESTS=`go list github.com/kube-cab/... | grep -v github.com/kube-cab/vendor/`
 
 all: build
 
