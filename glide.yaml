@@ -1,6 +1,6 @@
-package: github.com/kube-metrics-test
+package: github.com/kube-cab
 import:
-- package: gorilla/mux
+- package: github.com/gorilla/mux
 - package: k8s.io/api
   subpackages:
   - core/v1

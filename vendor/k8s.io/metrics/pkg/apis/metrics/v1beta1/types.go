@@ -69,7 +69,7 @@ type PodMetrics struct {
 	Timestamp metav1.Time     `json:"timestamp" protobuf:"bytes,2,opt,name=timestamp"`
 	Window    metav1.Duration `json:"window" protobuf:"bytes,3,opt,name=window"`
 
-	// metrics for all containers are collected within the same time window.
+	// Metrics for all containers are collected within the same time window.
 	Containers []ContainerMetrics `json:"containers" protobuf:"bytes,4,rep,name=containers"`
 }
 

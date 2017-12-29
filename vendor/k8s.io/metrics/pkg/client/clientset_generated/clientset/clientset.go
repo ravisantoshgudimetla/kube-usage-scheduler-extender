@@ -51,7 +51,7 @@ func (c *Clientset) MetricsV1beta1() metricsv1beta1.MetricsV1beta1Interface {
 	return c.metricsV1beta1
 }
 
-// Deprecated: metrics retrieves the default version of MetricsClient.
+// Deprecated: Metrics retrieves the default version of MetricsClient.
 // Please explicitly pick a version.
 func (c *Clientset) Metrics() metricsv1beta1.MetricsV1beta1Interface {
 	return c.metricsV1beta1
