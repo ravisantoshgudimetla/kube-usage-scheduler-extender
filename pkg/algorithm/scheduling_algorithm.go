@@ -11,10 +11,10 @@ import (
 
 // This file has the scheduling algorithm related functions.
 
-// NodeCost is nodename to cost mapping. cost is combination of
+// NodeCost is nodename to cost mapping. Cost is combination of cpu utilization and cost of node in cloud.
 type NodeCostInfo map[string]int64
 
-// random - just some random function which returns values between ranges.
+// random - just some random function which returns values in given range.
 func random(min, max int64) int64 {
 	return rand.Int63n(max-min) + min
 }
@@ -31,6 +31,7 @@ func PopulateCostForEachNode(nodeList *v1.NodeList) NodeCostInfo {
 	return nodeCloudCostInfo
 }
 
+// findOptimizedNode finds the optimized node in the cluster.
 func findOptimizedNode(nodeTotalCostInfo NodeCostInfo, nodeList *v1.NodeList) []v1.Node {
 	minCost := int64(math.MaxInt64)
 	var nodeNeeded string
@@ -59,13 +60,14 @@ func FindOptimizedNodeInCluster(nodeList *v1.NodeList, nodeCostInfo NodeCostInfo
 	for _, node := range nodeList.Items {
 		cloudCost, ok = nodeCostInfo[node.Name]
 		if !ok {
-			continue
+			continue // This node will not be taken into consideration for algorithm.
 		}
 		cpuUtil, ok = nodeMetricsInfo[node.Name]
 		if !ok {
-			continue
+			continue // This node will not be taken into consideration for algorithm.
 		}
 		fmt.Printf("Cloud Cost is %v, cpuUtil Cost is %v\n", cloudCost, cpuUtil)
+		// This could cause a buffer overflow. Need to have a check.
 		totalCost := cloudCost + cpuUtil
 		nodeTotalCost[node.Name] = totalCost
 	}

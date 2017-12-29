@@ -8,7 +8,7 @@ BUILD=`date +%FT%T%z`
 all: build
 
 build:
-	go build -o _output/bin/kube-cab github.com/kube-metrics-test
+	go build -o _output/bin/kube-cab github.com/kube-CaB
 
 clean:
 	rm -rf _output
