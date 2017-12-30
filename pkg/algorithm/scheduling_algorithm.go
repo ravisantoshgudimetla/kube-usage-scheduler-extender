@@ -11,7 +11,7 @@ import (
 
 // This file has the scheduling algorithm related functions.
 
-// NodeCost is nodename to cost mapping. Cost is combination of cpu utilization and cost of node in cloud.
+// NodeCostInfo is nodename to cost mapping. Cost is combination of cpu utilization and cost of node in cloud.
 type NodeCostInfo map[string]int64
 
 // random - just some random function which returns values in given range.
@@ -41,8 +41,11 @@ func findOptimizedNode(nodeTotalCostInfo NodeCostInfo, nodeList *v1.NodeList) []
 			nodeNeeded = node
 		}
 	}
+	var neededNodeList = make([]v1.Node, 0)
+	if minCost == int64(math.MaxInt64) {
+		return neededNodeList
+	}
 	fmt.Printf("The node %v is the node with minimum cost %v", nodeNeeded, minCost)
-	var neededNodeList []v1.Node
 	for _, node := range nodeList.Items {
 		if node.Name == nodeNeeded {
 			neededNodeList = append(neededNodeList, node)
@@ -51,7 +54,7 @@ func findOptimizedNode(nodeTotalCostInfo NodeCostInfo, nodeList *v1.NodeList) []
 	return neededNodeList
 }
 
-// FindNodeWithLeastCostInCluster takes nodeList, nodeCostInfo and nodeMetricsInfo and returns node with least cost.
+// FindOptimizedNodeInCluster takes nodeList, nodeCostInfo and nodeMetricsInfo and returns node with least cost.
 func FindOptimizedNodeInCluster(nodeList *v1.NodeList, nodeCostInfo NodeCostInfo, nodeMetricsInfo metrics.NodeMetricsInfo) []v1.Node {
 	nodeTotalCost := NodeCostInfo{}
 	var cloudCost, cpuUtil int64

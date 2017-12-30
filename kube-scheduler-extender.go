@@ -15,6 +15,7 @@ import (
 
 // TODO: All these types could be exported from scheduler once we import k8s.io/kubernetes as scheduler is not separated as
 // repo.
+// FailedNodesMap is needed by HTTP server response.
 type FailedNodesMap map[string]string
 
 // ExtenderArgs represents the arguments needed by the extender to filter/prioritize
@@ -30,6 +31,7 @@ type ExtenderArgs struct {
 	NodeNames *[]string
 }
 
+// ExtenderFilterResult stores the result from extender to be sent as response.
 type ExtenderFilterResult struct {
 	// Filtered set of nodes where the pod can be scheduled; to be populated
 	// only if ExtenderConfig.NodeCacheCapable == false
@@ -84,7 +86,10 @@ func filter(args *ExtenderArgs, config *restclient.Config) *ExtenderFilterResult
 	nodeCostInfo := algorithm.PopulateCostForEachNode(args.Nodes)
 	// Find the totalCost of each node.
 	nodesWithLeastCost := algorithm.FindOptimizedNodeInCluster(args.Nodes, nodeCostInfo, nodeUtilInfo)
-	return &ExtenderFilterResult{Nodes: &v1.NodeList{Items: nodesWithLeastCost}, NodeNames: nil, FailedNodes: nil}
+	if len(nodesWithLeastCost) > 0 {
+		return &ExtenderFilterResult{Nodes: &v1.NodeList{Items: nodesWithLeastCost}, NodeNames: nil, FailedNodes: nil}
+	}
+	return &ExtenderFilterResult{Nodes: args.Nodes, NodeNames: nil, FailedNodes: nil}
 }
 
 // startHttpServer starts the HTTP server needed for scheduler.

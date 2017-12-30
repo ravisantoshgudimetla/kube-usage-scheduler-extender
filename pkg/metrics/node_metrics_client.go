@@ -3,9 +3,9 @@ package metrics
 import (
 	"fmt"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/metrics/pkg/apis/metrics/v1beta1"
 	resourceclient "k8s.io/metrics/pkg/client/clientset_generated/clientset/typed/metrics/v1beta1"
 	"time"
-	"k8s.io/metrics/pkg/apis/metrics/v1beta1"
 )
 
 // NodeMetricsInfo contains pod metric values as a map from pod names to
@@ -59,7 +59,7 @@ func (c *resourceMetricsClient) GetResourceMetric() (NodeMetricsInfo, time.Time,
 // populateNodeMetricsInfo returns a map of nodes with their CPU usages.
 func populateNodeMetricsInfo(metrics *v1beta1.NodeMetricsList) NodeMetricsInfo {
 	nodeMetrics := NodeMetricsInfo{}
-	for _, m := range metrics.Items{
+	for _, m := range metrics.Items {
 		nodeMetrics[m.Name] = m.Usage.Cpu().Value()
 	}
 	return nodeMetrics

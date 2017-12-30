@@ -3,6 +3,9 @@ go:
 - 1.8.3
 before_script:
 - mv $TRAVIS_BUILD_DIR $HOME/gopath/src/github.com/
+install:
+- go get golang.org/x/tools/cmd/cover
+- go get github.com/mattn/goveralls
 # Need to add a validation for
 script:
 - make test
