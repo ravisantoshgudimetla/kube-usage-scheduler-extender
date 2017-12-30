@@ -63,14 +63,6 @@ func TestFindOptimizedNodeInCluster(t *testing.T) {
 			nodeMetricsInfo:  makeNodeMetricsInfo([]string{"node1"}, []int64{int64(35)}),
 			expectedNodeList: makeNodeList([]string{"node1"}),
 		},
-		{
-			description: "Test which returns node with least score but if metrics are not " +
-				"available that node will not be taken into consideration, so node2 won't be taken into consideration",
-			nodes:            &v1.NodeList{Items: makeNodeList([]string{"node1", "node2"})},
-			nodeCostInfo:     makeNodeCost([]string{"node2"}, []int64{int64(35)}),
-			nodeMetricsInfo:  makeNodeMetricsInfo([]string{"node1"}, []int64{int64(35)}),
-			expectedNodeList: makeNodeList([]string{""}),
-		},
 	}
 	for _, test := range tests {
 		if !reflect.DeepEqual(test.expectedNodeList, FindOptimizedNodeInCluster(test.nodes, test.nodeCostInfo, test.nodeMetricsInfo)) {
