@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/ravisantoshgudimetla/kube-cab.svg?branch=master)](https://travis-ci.org/ravisantoshgudimetla/kube-cab)
+[![Go Report Card](https://goreportcard.com/badge/github.com/ravisantoshgudimetla/kube-cab)](https://goreportcard.com/report/github.com/ravisantoshgudimetla/kube-cab)
 # Kube-‘CaB’  — Add-on services in kubernetes to make it ‘Cheap’ & ‘Balanced’
 Kubernetes's stock scheduler won't take into account the current utilization of nodes in cluster while making scheduling decisions. We intend to solve this problem with Kube-CaB. Kube-CaB is designed to be an add-on service on top of kubernetes to enhance scheduler with resource management capabilities and cost related optimizations in cloud. It has two components:
 - Kube metrics client to get node level metrics in a kubernetes cluster. As of now, the code returns the node with least CPU utilization but this could be extended to any resource(like memory, GPU etc).
