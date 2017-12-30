@@ -12,6 +12,7 @@ import (
 // metric values (the metric values are expected to be the metric as a milli-value)
 type NodeMetricsInfo map[string]int64
 
+// NewRESTMetricsClient returns a metricsClient.
 func NewRESTMetricsClient(resourceClient resourceclient.NodeMetricsesGetter) MetricsClient {
 	return &restMetricsClient{
 		&resourceMetricsClient{resourceClient},

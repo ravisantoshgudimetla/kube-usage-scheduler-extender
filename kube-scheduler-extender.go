@@ -15,6 +15,7 @@ import (
 
 // TODO: All these types could be exported from scheduler once we import k8s.io/kubernetes as scheduler is not separated as
 // repo.
+
 // FailedNodesMap is needed by HTTP server response.
 type FailedNodesMap map[string]string
 
