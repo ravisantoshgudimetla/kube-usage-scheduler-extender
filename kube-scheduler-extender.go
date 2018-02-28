@@ -84,9 +84,10 @@ func filter(args *ExtenderArgs, config *restclient.Config) *ExtenderFilterResult
 	}
 	fmt.Printf("At %v time, %v is the node utilization map\n", timeStamp, nodeUtilInfo)
 	// Populate cost for each node from cloud. This step will be replaced later.
-	nodeCostInfo := algorithm.PopulateCostForEachNode(args.Nodes)
+	//nodeCostInfo := algorithm.PopulateCostForEachNode(args.Nodes)
 	// Find the totalCost of each node.
-	nodesWithLeastCost := algorithm.FindOptimizedNodeInCluster(args.Nodes, nodeCostInfo, nodeUtilInfo)
+	//nodesWithLeastCost := algorithm.FindOptimizedNodeInCluster(args.Nodes, nodeCostInfo, nodeUtilInfo)
+	nodesWithLeastCost := algorithm.FindOptimizedNodeInCluster(args.Nodes, nodeUtilInfo)
 	if len(nodesWithLeastCost) > 0 {
 		return &ExtenderFilterResult{Nodes: &v1.NodeList{Items: nodesWithLeastCost}, NodeNames: nil, FailedNodes: nil}
 	}

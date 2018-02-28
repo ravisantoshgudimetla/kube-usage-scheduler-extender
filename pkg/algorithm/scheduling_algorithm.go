@@ -55,16 +55,17 @@ func findOptimizedNode(nodeTotalCostInfo NodeCostInfo, nodeList *v1.NodeList) []
 }
 
 // FindOptimizedNodeInCluster takes nodeList, nodeCostInfo and nodeMetricsInfo and returns node with least cost.
-func FindOptimizedNodeInCluster(nodeList *v1.NodeList, nodeCostInfo NodeCostInfo, nodeMetricsInfo metrics.NodeMetricsInfo) []v1.Node {
+func FindOptimizedNodeInCluster(nodeList *v1.NodeList, nodeMetricsInfo metrics.NodeMetricsInfo) []v1.Node {
 	nodeTotalCost := NodeCostInfo{}
 	var cloudCost, cpuUtil int64
+	cloudCost = 0
 	var ok bool
 	// The optimization function is sum of cpuUtil and cloudCost should be minimum.
 	for _, node := range nodeList.Items {
-		cloudCost, ok = nodeCostInfo[node.Name]
+		/*cloudCost, ok = nodeCostInfo[node.Name]
 		if !ok {
 			continue // This node will not be taken into consideration for algorithm.
-		}
+		}*/
 		cpuUtil, ok = nodeMetricsInfo[node.Name]
 		if !ok {
 			continue // This node will not be taken into consideration for algorithm.
