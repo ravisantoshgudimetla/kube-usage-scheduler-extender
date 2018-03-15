@@ -61,7 +61,7 @@ func (c *resourceMetricsClient) GetResourceMetric() (NodeMetricsInfo, time.Time,
 func populateNodeMetricsInfo(metrics *v1beta1.NodeMetricsList) NodeMetricsInfo {
 	nodeMetrics := NodeMetricsInfo{}
 	for _, m := range metrics.Items {
-		nodeMetrics[m.Name] = m.Usage.Cpu().Value()
+		nodeMetrics[m.Name] = m.Usage.Cpu().MilliValue()
 	}
 	return nodeMetrics
 }

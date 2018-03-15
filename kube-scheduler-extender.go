@@ -11,6 +11,7 @@ import (
 	resourceclient "k8s.io/metrics/pkg/client/clientset_generated/clientset/typed/metrics/v1beta1"
 	"net/http"
 	"strings"
+	"time"
 )
 
 // TODO: All these types could be exported from scheduler once we import k8s.io/kubernetes as scheduler is not separated as
@@ -68,6 +69,7 @@ func schedule(w http.ResponseWriter, r *http.Request, config *restclient.Config)
 // filter takes the metrics config input and returns
 func filter(args *ExtenderArgs, config *restclient.Config) *ExtenderFilterResult {
 	// Get the CPU utilization for each node. It returns nodename and CPU value.
+	startNodeStatsTime := time.Now()
 	metricsConfig, err := resourceclient.NewForConfig(config)
 	if err != nil {
 		panic(err.Error())
@@ -91,6 +93,8 @@ func filter(args *ExtenderArgs, config *restclient.Config) *ExtenderFilterResult
 	if len(nodesWithLeastCost) > 0 {
 		return &ExtenderFilterResult{Nodes: &v1.NodeList{Items: nodesWithLeastCost}, NodeNames: nil, FailedNodes: nil}
 	}
+	endNodeStatsTime := time.Since(startNodeStatsTime)
+	fmt.Printf("Time taken to return from extender %v", endNodeStatsTime)
 	return &ExtenderFilterResult{Nodes: args.Nodes, NodeNames: nil, FailedNodes: nil}
 }
 
