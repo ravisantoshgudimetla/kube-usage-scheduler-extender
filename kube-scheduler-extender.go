@@ -59,15 +59,15 @@ func schedule(w http.ResponseWriter, r *http.Request, config *restclient.Config)
 		if err := decoder.Decode(&args); err != nil {
 			http.Error(w, "Decode error", http.StatusBadRequest)
 		}
-		resp := filter(&args, config)
+		resp := prioritize(&args, config)
 		if err := encoder.Encode(resp); err != nil {
 			http.Error(w, "Encode error", http.StatusBadRequest)
 		}
 	}
 }
 
-// filter takes the metrics config input and returns
-func filter(args *ExtenderArgs, config *restclient.Config) *ExtenderFilterResult {
+// prioritize takes the metrics config input and returns prioritized node list
+func prioritize(args *ExtenderArgs, config *restclient.Config) *ExtenderFilterResult {
 	// Get the CPU utilization for each node. It returns nodename and CPU value.
 	startNodeStatsTime := time.Now()
 	metricsConfig, err := resourceclient.NewForConfig(config)
@@ -84,7 +84,8 @@ func filter(args *ExtenderArgs, config *restclient.Config) *ExtenderFilterResult
 		fmt.Println("Returning nodes here")
 		return &ExtenderFilterResult{Nodes: args.Nodes, NodeNames: nil, FailedNodes: nil}
 	}
-	fmt.Printf("At %v time, %v is the node utilization map\n", timeStamp, nodeUtilInfo)
+	//fmt.Printf("At %v time, %v is the node utilization map\n", timeStamp, nodeUtilInfo)
+	fmt.Printf("At %v time ", timeStamp)
 	// Populate cost for each node from cloud. This step will be replaced later.
 	//nodeCostInfo := algorithm.PopulateCostForEachNode(args.Nodes)
 	// Find the totalCost of each node.
@@ -101,6 +102,6 @@ func filter(args *ExtenderArgs, config *restclient.Config) *ExtenderFilterResult
 // startHttpServer starts the HTTP server needed for scheduler.
 func startHttpServer(config *restclient.Config) {
 	router := mux.NewRouter()
-	router.HandleFunc("/scheduler/filter", func(w http.ResponseWriter, r *http.Request) { schedule(w, r, config) }).Methods("POST")
+	router.HandleFunc("/scheduler/prioritize", func(w http.ResponseWriter, r *http.Request) { schedule(w, r, config) }).Methods("POST")
 	http.ListenAndServe(":9000", router)
 }

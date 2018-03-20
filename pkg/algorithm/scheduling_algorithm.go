@@ -45,7 +45,7 @@ func findOptimizedNode(nodeTotalCostInfo NodeCostInfo, nodeList *v1.NodeList) []
 	if minCost == int64(math.MaxInt64) {
 		return neededNodeList
 	}
-	fmt.Printf("The node %v is the node with minimum cost %v", nodeNeeded, minCost)
+	fmt.Printf("The node %v is the node with minimum cpu utilization of %v", nodeNeeded, minCost)
 	for _, node := range nodeList.Items {
 		if node.Name == nodeNeeded {
 			neededNodeList = append(neededNodeList, node)
@@ -70,7 +70,7 @@ func FindOptimizedNodeInCluster(nodeList *v1.NodeList, nodeMetricsInfo metrics.N
 		if !ok {
 			continue // This node will not be taken into consideration for algorithm.
 		}
-		fmt.Printf("Cloud Cost is %v, cpuUtil Cost is %v\n", cloudCost, cpuUtil)
+		fmt.Printf("CpuUtil Cost is %v\n", cpuUtil)
 		// This could cause a buffer overflow. Need to have a check.
 		totalCost := cloudCost + cpuUtil
 		nodeTotalCost[node.Name] = totalCost
