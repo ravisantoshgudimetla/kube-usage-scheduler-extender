@@ -7,7 +7,7 @@ Kubernetes's stock scheduler won't take into account the current utilization of 
 
 ## Architecture
 
-![](https://github.com/ravisantoshgudimetla/kube-CaB/blob/master/Kube-CaB%20Arch.png)
+![](https://github.com/ravisantoshgudimetla/kube-usage-scheduler-extender/blob/master/UsageBasedScheduling.png)
 
 ### Flow
 - Kubernetes scheduler has the concept of scheduler extender where it sends the request to HTTP server before binding a pod to node if extender is enabled. The request sent to HTTP server includes pod and nodelist that are filtered. 
@@ -17,7 +17,7 @@ Kubernetes's stock scheduler won't take into account the current utilization of 
 ## Build and Run
 
  - Make sure that metrics-server is running as deployment and getting node level metrics. You can test this using:
- kubectl get --raw "/apis/metrics.k8s.io/v1beta1/nodes" | jq. This should return information related to all the node along with current usage on the nodes.
+ `kubectl get --raw "/apis/metrics.k8s.io/v1beta1/nodes" | jq`. This should return information related to all the nodes along with current usage on the nodes.
  - Do a git clone of this repo and then run:
 
 ```
