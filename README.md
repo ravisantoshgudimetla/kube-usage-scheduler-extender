@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/ravisantoshgudimetla/kube-cab.svg?branch=master)](https://travis-ci.org/ravisantoshgudimetla/kube-cab)
+[![Build Status](https://travis-ci.org/ravisantoshgudimetla/kube-usage-scheduler-extender.svg?branch=master)](https://travis-ci.org/ravisantoshgudimetla/kube-usage-scheduler-extender)
 [![Go Report Card](https://goreportcard.com/badge/github.com/ravisantoshgudimetla/kube-usage-scheduler-extender)](https://goreportcard.com/badge/github.com/ravisantoshgudimetla/kube-usage-scheduler-extender)
 # kube-usage-scheduler-extender
 Kubernetes's stock scheduler won't take into account the current utilization of nodes in cluster while making scheduling decisions. We intend to solve this problem with kube-usage-scheduler-extender. It is designed to be an add-on service on top of kubernetes to enhance scheduler with resource management capabilities. It has two components:
