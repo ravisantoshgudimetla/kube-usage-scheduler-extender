@@ -11,7 +11,7 @@ Kubernetes's stock scheduler won't take into account the current utilization of 
 
 ### Flow
 - Kubernetes scheduler has the concept of scheduler extender where it sends the request to HTTP server before binding a pod to node if extender is enabled. The request sent to HTTP server includes pod and nodelist that are filtered. 
-- The extender as of now has a filter function which further filters the nodes from nodelist supplied. The filtering is based on computation algorithm. The computation algorithm as of now is a very simple algorithm which talks to metrics server.
+- The extender as of now has a filter function which further filters the nodes from nodelist supplied. The filtering is based on computation algorithm. The computation algorithm as of now is a very simple algorithm which talks to metrics server and get the node information for CPU, memory usage.
 - Once the filtering happens, the HTTP server responds back with node which has the least CPU utilization.
 
 ## Build and Run
@@ -21,10 +21,10 @@ Kubernetes's stock scheduler won't take into account the current utilization of 
 ```
 $ make
 ```
-and then run kube-cab:
+and then run kube-usage-scheduler-extender:
 
 ```
-$ _output/bin/kube-cab --kubeconfig <path to kubeconfig file>
+$ _output/bin/kube-ext --kubeconfig <path to kubeconfig file>
 ```
 
 ## Note:
