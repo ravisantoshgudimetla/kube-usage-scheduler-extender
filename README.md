@@ -3,7 +3,7 @@
 # kube-usage-scheduler-extender
 Kubernetes's stock scheduler won't take into account the current utilization of nodes in cluster while making scheduling decisions. We intend to solve this problem with kube-usage-scheduler-extender. It is designed to be an add-on service on top of kubernetes to enhance scheduler with resource management capabilities. It has two components:
 - Kube metrics client to get node level metrics in a kubernetes cluster. As of now, the code returns the node with least CPU utilization but this could be extended to any resource(like memory, GPU etc). We are relying on metrics-server to get information related to node usage(https://github.com/kubernetes-incubator/metrics-server).
-- A sample kubernetes scheduler extender which returns the node with least cost in the cloud. As of now, the algorithm is very simple with static hardcoding of node costs in the cloud.
+- A sample kubernetes scheduler extender which returns the node with least cpu utilization in the cluster. 
 
 ## Architecture
 
