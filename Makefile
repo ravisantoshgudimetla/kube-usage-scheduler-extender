@@ -9,7 +9,7 @@ GO_TESTS=`go list github.com/kube-cab/... | grep -v github.com/kube-cab/vendor/`
 all: build
 
 build:
-	go build -o _output/bin/kube-cab github.com/kube-cab
+	go build -o _output/bin/kube-ext github.com/kube-usage-scheduler-extender
 test:
 	go test ${GO_TESTS}
 
