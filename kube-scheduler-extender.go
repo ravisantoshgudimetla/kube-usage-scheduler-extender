@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
-	"github.com/kube-cab/pkg/algorithm"
-	"github.com/kube-cab/pkg/metrics"
+	"github.com/kube-usage-scheduler-extender/pkg/algorithm"
+	"github.com/kube-usage-scheduler-extender/pkg/metrics"
 	"k8s.io/api/core/v1"
 	restclient "k8s.io/client-go/rest"
 	resourceclient "k8s.io/metrics/pkg/client/clientset_generated/clientset/typed/metrics/v1beta1"
@@ -55,7 +55,7 @@ func schedule(w http.ResponseWriter, r *http.Request, config *restclient.Config)
 	defer r.Body.Close()
 	encoder := json.NewEncoder(w)
 	var args ExtenderArgs
-	if strings.Contains(r.URL.Path, "filter") {
+	if strings.Contains(r.URL.Path, "prioritize") {
 		if err := decoder.Decode(&args); err != nil {
 			http.Error(w, "Decode error", http.StatusBadRequest)
 		}
